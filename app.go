@@ -6,7 +6,7 @@ import (
 	"net/http"
 
   "github.com/tokopedia/gosample/hello"
-	grace "gopkg.in/paytm/grace.v1"
+	grace "gopkg.in/tokopedia/grace.v1"
 	logging "gopkg.in/tokopedia/logging.v1"
 )
 
