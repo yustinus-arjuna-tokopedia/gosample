@@ -1,11 +1,13 @@
 package hello
 
 import (
+	"context"
 	"expvar"
 	"log"
 	"net/http"
 
-	logging "gopkg.in/tokopedia/logging.v1"
+	"github.com/opentracing/opentracing-go"
+	"gopkg.in/tokopedia/logging.v1"
 )
 
 type ServerConfig struct {
@@ -44,6 +46,16 @@ func NewHelloWorldModule() *HelloWorldModule {
 }
 
 func (hlm *HelloWorldModule) SayHelloWorld(w http.ResponseWriter, r *http.Request) {
+	span, ctx := opentracing.StartSpanFromContext(r.Context(), r.URL.Path)
+	defer span.Finish()
+
 	hlm.stats.Add(1)
+	hlm.someSlowFuncWeWantToTrace(ctx, w)
+}
+
+func (hlm *HelloWorldModule) someSlowFuncWeWantToTrace(ctx context.Context, w http.ResponseWriter) {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "someSlowFuncWeWantToTrace")
+	defer span.Finish()
+
 	w.Write([]byte("Hello " + hlm.something))
 }

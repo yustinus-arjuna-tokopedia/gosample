@@ -8,7 +8,7 @@ Sample Go app
 
 3. Initialize a new git repository with `git init`, `git add .` and `git commit -m "Initial commit"`.
 
-4. Run `go get` to install the dependencies.
+4. Run `dep ensure` to install the dependencies. If you don't have [dep](https://github.com/golang/dep), install using homebrew etc.
 
 5. Run `go build` and then ./<your-project-name> to start the local web server.
 
