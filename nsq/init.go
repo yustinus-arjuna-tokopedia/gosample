@@ -1,10 +1,13 @@
 package nsq
 
 import (
+	"encoding/json"
+	"fmt"
 	"log"
 	"os"
 
 	"github.com/nsqio/go-nsq"
+	"github.com/tokopedia/gosample/redis"
 	logging "gopkg.in/tokopedia/logging.v1"
 )
 
@@ -36,9 +39,9 @@ func NewNSQModule() *NSQModule {
 
 	// contohnya: caranya ciptakan nsq consumer
 	nsqCfg := nsq.NewConfig()
-	q := createNewConsumer(nsqCfg, "random-topic", "test", handler)
+	q := createNewConsumer(nsqCfg, "test-nsq", "exchann", handler)
 	q.SetLogger(log.New(os.Stderr, "nsq:", log.Ltime), nsq.LogLevelError)
-	q.ConnectToNSQLookupd("nsqlookupd.local:4161")
+	q.ConnectToNSQLookupd("http://devel-go.tkpd:4161")
 
 	return &NSQModule{
 		cfg: &cfg,
@@ -48,7 +51,20 @@ func NewNSQModule() *NSQModule {
 }
 
 func handler(msg *nsq.Message) error {
-	log.Println("got message :", string(msg.Body))
+	var jsonData string
+	_ = json.Unmarshal(msg.Body, &jsonData)
+	fmt.Println("consuming topic, message finish!")
+	bjson := []byte(jsonData)
+	err := redis.Set("order_list:juna", bjson)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	fmt.Println("set message to redis order_list:juna!")
+	err = redis.Expire("order_list:juna", 60)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	fmt.Println("set key redis order_list:juna to expire 60 seconds!")
 	msg.Finish()
 	return nil
 }
