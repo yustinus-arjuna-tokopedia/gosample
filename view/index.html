@@ -1,0 +1,78 @@
+<h1>Jumlah pengunjung : {{.ViewCount}}
+    <h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>MSISDN</th>
+                    <th>Email</th>
+                    <th>Birth Date</th>
+                    <th>Create Time</th>
+                    <th>Update Time</th>
+                </tr>
+            </thead>
+            <tbody id="tbody-search-results">
+                {{range .UserData}}
+                <tr>
+                    <td>{{.ID}}</td>
+                    <td>{{.FullName}}</td>
+                    <td>{{.MSISDN}}</td>
+                    <td>{{.UserEmail}}</td>
+                    <td>{{.BirthDate}}</td>
+                    <td>{{.CreateTime}}</td>
+                    <td>{{.UpdateTime}}</td>
+                </tr>
+                {{end}}
+            </tbody>
+        </table>
+        <input id='input-search-users' oninput="getUsers()" placeholder="Search User..." />
+        <script src="http://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+            crossorigin="anonymous"></script>
+        <script>
+            function getUsers() {
+                //if ($('#input-search-users').val() != '') {
+                $.ajax({
+                    url: "/search",
+                    data: {
+                        key: $('#input-search-users').val()
+                    },
+                    success: function (data) {
+                        console.log(data)
+                        if (data != null) {
+                            $('#tbody-search-results').html("");
+                            $.each(data, function (key, value) {
+                                html = "";
+                                html += "<tr>";
+                                html += "<td>";
+                                html += value.id;
+                                html += "</td>";
+                                html += "<td>";
+                                html += value.full_name;
+                                html += "</td>";
+                                html += "<td>";
+                                html += value.msisdn;
+                                html += "</td>";
+                                html += "<td>";
+                                html += value.email;
+                                html += "</td>";
+                                html += "<td>";
+                                html += value.birth_date;
+                                html += "</td>";
+                                html += "<td>";
+                                html += value.create_time;
+                                html += "</td>";
+                                html += "<td>";
+                                html += value.update_time;
+                                html += "</td>";
+                                html += "</tr>";
+                                $('#tbody-search-results').append(html);
+                            });
+                        } else {
+                            html = "<tr><td colspan = '7'>No Result</td></tr>"
+                        }
+                    }
+                });
+                //}
+            }
+        </script>
