@@ -8,8 +8,8 @@ import (
 var Db *sql.DB
 
 const (
-	DB_USER     = "yp180102"
-	DB_PASSWORD = "OiQr2df1DSy4Q0"
+	DB_USER     = "your_devel_username"
+	DB_PASSWORD = "your_devel_password"
 	DB_NAME     = "tokopedia-dev-db"
 	DB_HOST     = "devel-postgre.tkpd"
 	DB_PORT     = "5432"
